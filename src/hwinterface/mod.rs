@@ -1,3 +1,4 @@
+pub mod serial_interface;
 use std::collections::HashMap;
 
 pub enum SettingType {
