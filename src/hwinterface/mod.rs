@@ -27,7 +27,7 @@ pub trait HardwareInterface {
     fn reset(&mut self);
 
     /// Receive data from the device
-    fn receive(&mut self) -> String;
+    fn receive(&mut self) -> Option<String>;
 
     /// Send data to the device
     fn send(&mut self, msg: String);
