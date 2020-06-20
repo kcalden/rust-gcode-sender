@@ -50,12 +50,12 @@ impl HardwareInterface for SerialInterface {
     /// println!("COM Port -> {}", serial_port_settings.port_name);
     /// println!("Baudrate -> {}", serial_port_settings.serial_settings.baud_rate);
     /// ```
-    fn default_settings() -> PortSettings {
-        PortSettings{ 
-            port_name: String::from(""),
-            serial_settings: serialport::SerialPortSettings::default(),
-        }
-    }
+    // fn default_settings() -> PortSettings {
+    //     PortSettings{ 
+    //         port_name: String::from(""),
+    //         serial_settings: serialport::SerialPortSettings::default(),
+    //     }
+    // }
 
 
     /// List serial ports
@@ -82,6 +82,7 @@ impl HardwareInterface for SerialInterface {
 
     /// Close the serial port
     fn disconnect(&mut self) {
+        // Deactivate DTR pin
         if let Some(port) = &mut self.port {
             port.write_data_terminal_ready(false);
         }
@@ -91,6 +92,7 @@ impl HardwareInterface for SerialInterface {
 
     /// Connect to a serial port
     fn connect(&mut self) {
+        // Open serial port with the stored settings
         self.port = match serialport::open_with_settings(
             &self.settings.port_name, 
             &self.settings.serial_settings
@@ -104,6 +106,7 @@ impl HardwareInterface for SerialInterface {
             }
         };
 
+        // Activate DTR pin on connect
         if let Some(port) = &mut self.port {
             port.write_data_terminal_ready(true);
         }
@@ -120,6 +123,7 @@ impl HardwareInterface for SerialInterface {
 
     /// Read a line from the serial buffer if there is a line there
     fn receive(&mut self) -> Option<String> {
+
         // Read data into the serial buffer
         if let Some(port) = &mut self.port {
             port.read_to_string(&mut self.ser_buf);
@@ -127,6 +131,7 @@ impl HardwareInterface for SerialInterface {
 
         for next_char in self.ser_buf.chars() {
             match next_char {
+
                 // Push the line to the line buffer at a new line
                 '\n' | '\r' => {
                     if self.line_buf.len() > 0 {
@@ -134,6 +139,7 @@ impl HardwareInterface for SerialInterface {
                     }
                     self.line_buf.clear();
                 },
+
                 // Or just keep filling the line buffer
                 _ => {
                     self.line_buf.push(next_char)
@@ -151,9 +157,26 @@ impl HardwareInterface for SerialInterface {
         None
     }
 
+    /// Send a string to the device through serial
     fn send(&mut self, msg: String) {
        if let Some(port) = &mut self.port {
            port.write_all(msg.as_bytes());
        }
+    }
+}
+
+
+impl Default for SerialInterface {
+    fn default() -> Self {
+        Self {
+            settings: PortSettings {
+                port_name: String::new(),
+                serial_settings: Default::default()
+            },
+            port: None,
+            ser_buf: String::new(),
+            line_buf: String::new(),
+            lines: Vec::new(),
+        }
     }
 }

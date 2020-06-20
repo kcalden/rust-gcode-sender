@@ -12,7 +12,7 @@ pub trait HardwareInterface {
     fn apply(&mut self, settings: Self::Settings);
 
     /// Default settings for the interface
-    fn default_settings() -> Self::Settings;
+    // fn default_settings() -> Self::Settings;
 
     /// Close connection to the device
     fn disconnect(&mut self);
