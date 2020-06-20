@@ -5,7 +5,7 @@ use std::collections::HashMap;
 /// Trait for a hardware interface
 ///
 /// This is what will actually control the machine
-pub trait HWInterface {
+pub trait HardwareInterface {
     type Settings;
 
     /// Apply settings to the object

@@ -1,5 +1,5 @@
 use crate::hwinterface::{
-    HWInterface,
+    HardwareInterface,
 };
 use serialport::prelude::*;
 
@@ -21,7 +21,7 @@ pub struct SerialInterface {
     port: Option<Box<dyn SerialPort>>,
 }
 
-impl HWInterface for SerialInterface {
+impl HardwareInterface for SerialInterface {
     type Settings = PortSettings;
 
     /// Store settings to the serial port
