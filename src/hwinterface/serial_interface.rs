@@ -19,6 +19,15 @@ pub struct SerialInterface {
 
     /// Serial port to communicate through
     port: Option<Box<dyn SerialPort>>,
+
+    /// Serial buffer
+    ser_buf: String,
+
+    /// Current line buffer
+    line_buf: String,
+
+    /// Stored lines
+    lines: Vec<String>,
 }
 
 impl HardwareInterface for SerialInterface {
@@ -100,8 +109,37 @@ impl HardwareInterface for SerialInterface {
         }
     }
 
-    fn receive(&mut self) -> String {
-        String::from("")
+    /// Read a line from the serial buffer if there is a line there
+    fn receive(&mut self) -> Option<String> {
+        // Read data into the serial buffer
+        if let Some(port) = &mut self.port {
+            port.read_to_string(&mut self.ser_buf);
+        }
+
+        for next_char in self.ser_buf.chars() {
+            match next_char {
+                // Push the line to the line buffer at a new line
+                '\n' | '\r' => {
+                    if self.line_buf.len() > 0 {
+                        self.lines.push(self.line_buf.clone());
+                    }
+                    self.line_buf.clear();
+                },
+                // Or just keep filling the line buffer
+                _ => {
+                    self.line_buf.push(next_char)
+                }
+            }
+        }
+
+        // Clear the serial buffer
+        self.ser_buf.clear();
+
+        // Return a line if one is available
+        if self.lines.len() > 0 {
+            Some(self.lines.remove(0));
+        }
+        None
     }
 
     fn send(&mut self, msg: String) {
