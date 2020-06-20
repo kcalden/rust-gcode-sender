@@ -55,7 +55,16 @@ impl HWInterface for SerialInterface {
     }
 
     fn connect(&mut self) {
-        let mut s = serialport::SerialPortSettings::default();
+        self.port = match serialport::open_with_settings(
+            &self.settings.port_name, 
+            &self.settings.serial_settings
+        ) {
+            Ok(port) => Some(port),
+            Err(_) => {
+                eprintln!("Could not open serial port!");
+                None
+            }
+        }
     }
 
     fn reset(&mut self) {
