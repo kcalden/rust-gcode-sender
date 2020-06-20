@@ -80,7 +80,13 @@ impl HardwareInterface for SerialInterface {
         portnames
     }
 
+    /// Close the serial port
     fn disconnect(&mut self) {
+        if let Some(port) = &mut self.port {
+            port.write_data_terminal_ready(false);
+        }
+        // Port closes when it's dropped
+        self.port = None;
     }
 
     /// Connect to a serial port
