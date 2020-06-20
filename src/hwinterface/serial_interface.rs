@@ -98,7 +98,10 @@ impl HardwareInterface for SerialInterface {
             }
         };
 
-        self.reset();
+        if let Some(port) = &mut self.port {
+            port.write_data_terminal_ready(true);
+        }
+
     }
 
     /// Trigger DTR reset. This 
