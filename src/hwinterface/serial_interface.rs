@@ -3,39 +3,29 @@ use crate::hwinterface::{
 };
 use serialport::prelude::*;
 
-pub enum PortSettings {
-    PortName(String),
-    BaudRate(u32),
-    DataBits(serialport::DataBits),
-    FlowControl(serialport::FlowControl),
-    Parity(serialport::Parity),
-    StopBits(serialport::StopBits),
-    Timeout(std::time::Duration),
+pub struct PortSettings {
+    pub port_name: String,
+    pub serial_settings: serialport::SerialPortSettings,
 }
 
 pub struct SerialInterface {
-    interface_settings: Vec<PortSettings>,
+    settings: PortSettings,
     port: Option<Box<dyn SerialPort>>,
 }
 
 impl HWInterface for SerialInterface {
     type Settings = PortSettings;
    
-    fn apply(&mut self, settings: Vec<PortSettings>) {
-        self.interface_settings = settings
+    fn apply(&mut self, settings: PortSettings) {
+        self.settings = settings;
     }
 
     /// Return a list of the possible settings
-    fn default_settings() -> Vec<PortSettings> {
-        vec![
-            PortSettings::PortName(String::from("")),
-            PortSettings::BaudRate(250000),
-            PortSettings::DataBits(serialport::DataBits::Eight),
-            PortSettings::FlowControl(serialport::FlowControl::None),
-            PortSettings::Parity(serialport::Parity::None),
-            PortSettings::StopBits(serialport::StopBits::One),
-            PortSettings::Timeout(std::time::Duration::from_millis(250)),
-        ]
+    fn default_settings() -> PortSettings {
+        PortSettings{ 
+            port_name: String::from(""),
+            serial_settings: serialport::SerialPortSettings::default(),
+        }
     }
 
 
@@ -62,11 +52,10 @@ impl HWInterface for SerialInterface {
     }
 
     fn disconnect(&mut self) {
-
     }
 
     fn connect(&mut self) {
-
+        let mut s = serialport::SerialPortSettings::default();
     }
 
     fn reset(&mut self) {

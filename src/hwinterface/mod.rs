@@ -2,14 +2,6 @@ pub mod serial_interface;
 
 use std::collections::HashMap;
 
-// pub enum SettingType {
-//     StringType(String),
-//     FloatType(f32),
-//     IntType(i32),
-// }
-
-// pub type Settings<SettingEnums> = HashMap<String, SettingEnums>;
-
 /// Trait for a hardware interface
 ///
 /// This is what will actually control the machine
@@ -17,10 +9,10 @@ pub trait HWInterface {
     type Settings;
 
     /// Apply settings to the object
-    fn apply(&mut self, settings: Vec<Self::Settings>);
+    fn apply(&mut self, settings: Self::Settings);
 
     /// Default settings for the interface
-    fn default_settings() -> Vec<Self::Settings>;
+    fn default_settings() -> Self::Settings;
 
     /// Close connection to the device
     fn disconnect(&mut self);
