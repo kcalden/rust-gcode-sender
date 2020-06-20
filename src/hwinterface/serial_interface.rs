@@ -152,6 +152,8 @@ impl HardwareInterface for SerialInterface {
     }
 
     fn send(&mut self, msg: String) {
-       
+       if let Some(port) = &mut self.port {
+           port.write_all(msg.as_bytes());
+       }
     }
 }
