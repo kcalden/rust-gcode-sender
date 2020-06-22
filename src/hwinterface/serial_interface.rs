@@ -4,7 +4,7 @@ use crate::hwinterface::{
 use serialport::prelude::*;
 
 /// Serial Port settings
-pub struct PortSettings {
+pub struct SerialSettings {
     /// Path to the serial port
     pub port_name: String,
 
@@ -15,7 +15,7 @@ pub struct PortSettings {
 /// Serial Interface
 pub struct SerialInterface {
     /// Serial Interface Settings
-    settings: PortSettings,
+    pub settings: SerialSettings,
 
     /// Serial port to communicate through
     port: Option<Box<dyn SerialPort>>,
@@ -31,33 +31,6 @@ pub struct SerialInterface {
 }
 
 impl HardwareInterface for SerialInterface {
-    type Settings = PortSettings;
-
-    /// Store settings to the serial port
-    fn apply(&mut self, settings: PortSettings) {
-        self.settings = settings;
-    }
-
-    /// Return a list of the possible settings
-    /// 
-    /// # Example
-    /// 
-    /// ```
-    /// let serial_port_settings = SerialInterface::default_settings()
-    /// 
-    /// // Print the COM port name and baud rate
-    /// 
-    /// println!("COM Port -> {}", serial_port_settings.port_name);
-    /// println!("Baudrate -> {}", serial_port_settings.serial_settings.baud_rate);
-    /// ```
-    // fn default_settings() -> PortSettings {
-    //     PortSettings{ 
-    //         port_name: String::from(""),
-    //         serial_settings: serialport::SerialPortSettings::default(),
-    //     }
-    // }
-
-
     /// List serial ports
     ///
     /// # Example
@@ -67,7 +40,7 @@ impl HardwareInterface for SerialInterface {
     ///    println!("{}", port);
     /// }
     /// ```
-    fn list() -> Vec<String> {
+    fn list(&self) -> Vec<String> {
         let mut portnames = Vec::new();
         if let Ok(port_infos) = serialport::available_ports() {
             for port_info in port_infos.iter() {
@@ -169,7 +142,7 @@ impl HardwareInterface for SerialInterface {
 impl Default for SerialInterface {
     fn default() -> Self {
         Self {
-            settings: PortSettings {
+            settings: SerialSettings {
                 port_name: String::new(),
                 serial_settings: Default::default()
             },
