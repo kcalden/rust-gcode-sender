@@ -10,13 +10,13 @@ pub enum Command {
 }
 
 /// Parse file line by line
-pub fn parse_file(file_path: &str) -> Vec<Command> {
+pub fn parse(file_contents: &str) -> Vec<Command> {
+    // let file_contents = match std::fs::read_to_string(file_path) {
+        //     Ok(contents) => contents,
+        //     _ => return Vec::new()
+        // };
+        
     let regex_home_flags = Regex::new(r"^\s*(G28(\s+(X|Y|Z))*)").unwrap();
-    let file_contents = match std::fs::read_to_string(file_path) {
-        Ok(contents) => contents,
-        _ => return Vec::new()
-    };
-    
     let mut commands = Vec::new();
     
     // Here I'm just going to do my own parsing before passing it to the gcode
