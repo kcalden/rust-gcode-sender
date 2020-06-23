@@ -8,5 +8,6 @@ edition = "2018"
 
 [dependencies]
 serialport = "3.3"
-dialoguer = "0.6"
-indicatif = "0.15"
+tui = "0.9"
+termion = "1.5"
+gcode = "0.6.1"
