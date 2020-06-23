@@ -35,7 +35,7 @@ pub struct Machine {
 impl Machine {
     fn load_from_file(&mut self, file_path: &str) {
         if let Some(contents) = util::load_file(file_path) {
-            self.program = parser::parse_file(&contents);
+            self.program = parser::parse(&contents);
             self.comm_history.push(MsgType::Normal(
                 String::from(format!("Loaded file {}", file_path))));
         }else{
