@@ -1,13 +1,13 @@
 use gcode;
 use regex::Regex;
 use rayon::prelude::*;
-use std::time::Instant;
 
 pub enum Command {
     Move(gcode::GCode),
     Generic(gcode::GCode),
     Home(String),
     HostCommand(String),
+    ToolChange(gcode::GCode),
     Nothing,
 }
 
@@ -46,16 +46,19 @@ pub fn parse(file_contents: &str) -> Vec<Command> {
         
         // Now, we can start parsing
         if let Some(gc) = gcode::parse(src_line).next() {
-            if let gcode::Mnemonic::General = gc.mnemonic() {
-                match gc.major_number() {
-                    0 | 1 => {
-                        return Command::Move(gc);
-                    },
-                    _ => ()
-                }
+            match gc.mnemonic() {
+                gcode::Mnemonic::General => {
+                    match gc.major_number() {
+                        0 | 1 => {
+                            return Command::Move(gc);
+                        },
+                        _ => return Command::Generic(gc)
+                    }
+                },
+                gcode::Mnemonic::ToolChange => return Command::ToolChange(gc),
+                _ => return Command::Generic(gc)
             }
-            return Command::Generic(gc);
-        }else {
+        }else{
             return Command::Nothing;
         }
     });
