@@ -11,6 +11,7 @@ pub enum Command {
     Nothing,
 }
 
+/// Parse file into a list of commands
 pub fn parse(file_contents: &str) -> Vec<Command> {
     let lines:Vec<&str> = file_contents.lines()
     .filter(|src_line| {
@@ -26,6 +27,7 @@ pub fn parse(file_contents: &str) -> Vec<Command> {
         }
     }).collect();
 
+    // Finds home flags
     let regex_home_flags = Regex::new(r"^\s*(G28(\s+(X|Y|Z))*)").unwrap();
 
     let parse_iter = lines.par_iter()

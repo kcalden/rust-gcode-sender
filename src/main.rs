@@ -1,5 +1,7 @@
 mod hwinterface;
 mod machine;
+mod parser;
+mod util;
 use hwinterface::*;
 use serial_interface::{SerialInterface};
 
