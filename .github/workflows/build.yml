@@ -12,7 +12,7 @@ jobs:
         with:
           toolchain: stable
       - name: Install libudev
-        run: sudo apt-get install libudev
+        run: sudo apt-get install libudev-dev
       - uses: actions-rs/cargo@v1
         with:
           command: build
