@@ -11,6 +11,8 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - name: Install libudev
+        run: sudo apt-get install libudev
       - uses: actions-rs/cargo@v1
         with:
           command: build
